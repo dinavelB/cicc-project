@@ -13,10 +13,11 @@ public class DbConnection {
 
     DbConnection() throws Exception{
         FileReader readFile =  new FileReader("src/connections/database.properties");
-        Properties properties = new Properties();
+        Properties properties = new Properties(); // properties of the file
 
-        properties.load(readFile);
+        properties.load(readFile); // load the properties
 
+        // store the properties
         url = properties.getProperty("db.url");
         username =  properties.getProperty("db.username");
         driver = properties.getProperty("db.driver");
