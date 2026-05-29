@@ -28,7 +28,8 @@ public class DbConnection {
         Connection connection = null;
 
         try {
-
+            // re-initialize
+            DbConnection db = new DbConnection();
             Class.forName(driver);
             connection = DriverManager.getConnection(url, username, "");
 
