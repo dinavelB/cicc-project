@@ -8,9 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class Account implements AccountDao{
-    JBcrypt bcrypt = new JBcrypt();
 
     public AccountModel loginAccount(int accountNum, String pin) throws Exception {
+        JBcrypt bcrypt = new JBcrypt();
+        AccountModel account =   new AccountModel();
         Connection connection = DbConnection.StartConnection();
         String foundAccount = "SELECT * FROM accounts WHERE account_number = ?";
 
@@ -20,8 +21,6 @@ public class Account implements AccountDao{
         p.setInt(1, accountNum);
 //        results of the query using the prepared statement
         ResultSet resultSet = p.executeQuery();
-
-        AccountModel account =   new AccountModel();
 
         if(resultSet.next()){
            account.setFName(resultSet.getString("full_name"));
@@ -39,6 +38,7 @@ public class Account implements AccountDao{
         if(!isSamePass){
             throw new Exception("Incorrect Password");
         }
+
         return account;
     }
 
