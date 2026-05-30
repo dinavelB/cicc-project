@@ -3,17 +3,22 @@ package model;
 public class AccountModel
 {
     public String full_name;
-    public int account_number;
+    public String account_number;
     public int balance;
     public double daily_withdrawn;
     public double daily_deposit;
     public boolean is_active;
+    public String pin;
 
     public void setFName(String full_name){
         this.full_name = full_name;
     }
 
-    public void setAccountNumber(int account_number){
+    public void setPin(String pin){
+        this.pin = pin;
+    }
+
+    public void setAccountNumber(String account_number){
         this.account_number = account_number;
     }
 

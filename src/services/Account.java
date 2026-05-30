@@ -2,17 +2,17 @@ package services;
 import dao.AccountDao;
 import connections.DbConnection;
 import model.AccountModel;
-import org.mindrot.jbcrypt.BCrypt;
-
+import util.JBcrypt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class Account implements AccountDao{
+    JBcrypt bcrypt = new JBcrypt();
 
-    public AccountModel loginAccount(int accountNum, int pin) throws Exception {
+    public AccountModel loginAccount(int accountNum, String pin) throws Exception {
         Connection connection = DbConnection.StartConnection();
-        String foundAccount = "SELECT * FROM accounts WHERE accountNum = ?";
+        String foundAccount = "SELECT * FROM accounts WHERE account_number = ?";
 
 //    create a pStatement with the connection method from dbConnection
         PreparedStatement p = connection.prepareStatement(foundAccount);
@@ -21,20 +21,24 @@ public class Account implements AccountDao{
 //        results of the query using the prepared statement
         ResultSet resultSet = p.executeQuery();
 
-        BCrypt hash = new BCrypt();
-
         AccountModel account =   new AccountModel();
 
         if(resultSet.next()){
-           account.setFName(resultSet.getString("pin"));
-           account.setAccountNumber(resultSet.getInt("pin"));
+           account.setFName(resultSet.getString("full_name"));
+           account.setAccountNumber(resultSet.getString("account_number"));
+           account.setPin(resultSet.getString("pin"));
            account.setBalance(resultSet.getInt("balance"));
-           account.setDailyDeposit(resultSet.getInt("dailyDeposit"));
-           account.setIsActive(resultSet.getBoolean("isActive"));
-           account.setDailyWithdrawn(resultSet.getInt("dailyWithdrawn"));
+           account.setDailyDeposit(resultSet.getInt("daily_deposit"));
+           account.setIsActive(resultSet.getBoolean("is_active"));
+           account.setDailyWithdrawn(resultSet.getInt("daily_withdrawn"));
         }
 
+        String hashedpassword = bcrypt.hashPassword(pin);
+        boolean isSamePass = bcrypt.comparePassword(hashedpassword, account.pin);
 
+        if(!isSamePass){
+            throw new Exception("Incorrect Password");
+        }
         return account;
     }
 
